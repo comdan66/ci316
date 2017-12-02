@@ -26,6 +26,7 @@ class Security {
     self::$expire = 7200;
     self::$tokenName = 'ci_csrf_token';
     self::$cookieName = 'ci_csrf_token';
+    self::$charset = strtoupper (Config::get ('general', 'charset'));
 
     if (Config::get ('csrf', 'protection')) {
       self::$expire = Config::get ('csrf', 'expire');
@@ -33,8 +34,6 @@ class Security {
       self::$cookieName = Config::get ('cookie', 'prefix') . Config::get ('csrf', 'cookie_name');
       self::csrfSetHash ();
     }
-
-    self::$charset = strtoupper (Config::get ('general', 'charset'));
   }  
 
 
