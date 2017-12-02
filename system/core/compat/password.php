@@ -1,14 +1,23 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
 
-if (isPhp ('5.5') || !defined ('CRYPT_BLOWFISH') || CRYPT_BLOWFISH !== 1 || defined ('HHVM_VERSION'))
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
+
+if (is_php ('5.5') || !defined ('CRYPT_BLOWFISH') || CRYPT_BLOWFISH !== 1 || defined ('HHVM_VERSION'))
 	return;
 
-defined ('PASSWORD_BCRYPT') OR define ('PASSWORD_BCRYPT', 1);
-defined ('PASSWORD_DEFAULT') OR define ('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
+defined ('PASSWORD_BCRYPT') || define ('PASSWORD_BCRYPT', 1);
+defined ('PASSWORD_DEFAULT') || define ('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
 
 if (!function_exists ('password_get_info')) {
 	function password_get_info ($hash) {
-		return (strlen ($hash) < 60 OR sscanf ($hash, '$2y$%d', $hash) !== 1) ? array ('algo' => 0, 'algoName' => 'unknown', 'options' => array ()) : array ('algo' => 1, 'algoName' => 'bcrypt', 'options' => array ('cost' => $hash));
+		return strlen ($hash) < 60 || sscanf ($hash, '$2y$%d', $hash) !== 1
+					 ? array ('algo' => 0, 'algoName' => 'unknown', 'options' => array ())
+					 : array ('algo' => 1, 'algoName' => 'bcrypt', 'options' => array ('cost' => $hash));
 	}
 }
 
@@ -24,32 +33,32 @@ if (!function_exists ('password_hash')) {
 		}
 
 		if (isset ($options['cost']) && ($options['cost'] < 4 || $options['cost'] > 31)) {
-			trigger_error ('password_hash(): Invalid bcrypt cost parameter specified: ' . (int) $options['cost'], E_USER_WARNING);
+			trigger_error ('password_hash(): Invalid bcrypt cost parameter specified: ' . ((int)$options['cost']), E_USER_WARNING);
 			return null;
 		}
 
 		if (isset ($options['salt']) && ($saltlen = ($func_overload ? mb_strlen ($options['salt'], '8bit') : strlen ($options['salt']))) < 22) {
 			trigger_error ('password_hash(): Provided salt is too short: ' . $saltlen . ' expecting 22', E_USER_WARNING);
 			return null;
-		} else if (!isset ($options['salt'])) {
-			
+		}
+
+		if (!isset ($options['salt'])) {
 			if (function_exists ('random_bytes')) {
 				try {
 					$options['salt'] = random_bytes(16);
 				} catch (Exception $e) {
-					class_exists ('Log') && Log::message ('compat/password: Error while trying to use random_bytes(): ' . $e->getMessage ());
+					Log::message ('compat/password: Error while trying to use random_bytes(): ' . $e->getMessage ());
 					return false;
 				}
 			} else if (defined ('MCRYPT_DEV_URANDOM')) {
 				$options['salt'] = mcrypt_create_iv (16, MCRYPT_DEV_URANDOM);
 			} else if (DIRECTORY_SEPARATOR === '/' && (is_readable ($dev = '/dev/arandom') || is_readable ($dev = '/dev/urandom'))) {
-				
 				if (($fp = fopen ($dev, 'rb')) === false) {
 					class_exists ('Log') && Log::message ('compat/password: Unable to open ' . $dev . ' for reading.');
 					return false;
 				}
 
-				isPhp('5.4') && stream_set_chunk_size ($fp, 16);
+				is_php ('5.4') && stream_set_chunk_size ($fp, 16);
 
 				$options['salt'] = '';
 
@@ -90,12 +99,11 @@ if (!function_exists ('password_needs_rehash')) {
 	function password_needs_rehash ($hash, $algo, array $options = array ()) {
 		$info = password_get_info ($hash);
 
-		if ($algo !== $info['algo']) {
+		if ($algo !== $info['algo'])
 			return true;
-		} else if ($algo === 1) {
-			$options['cost'] = isset ($options['cost']) ? (int) $options['cost'] : 10;
-			return ($info['options']['cost'] !== $options['cost']);
-		}
+
+		if ($algo === 1)
+			return $info['options']['cost'] !== (isset ($options['cost']) ? (int) $options['cost'] : 10);
 
 		return false;
 	}
@@ -110,6 +118,6 @@ if (!function_exists ('password_verify')) {
 		for ($i = 0; $i < 60; $i++)
 			$compare |= (ord ($password[$i]) ^ ord ($hash[$i]));
 
-		return ($compare === 0);
+		return $compare === 0;
 	}
 }

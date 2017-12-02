@@ -3,8 +3,11 @@
 class welcome extends Controller {
 
 	public function index () {
+		// echo '<meta http-equiv="Content-type" content="text/html; charset=utf-8" /><pre>';
+		// var_dump (base_url ('a'));
+		// exit ();
 		echo '<meta http-equiv="Content-type" content="text/html; charset=utf-8" /><pre>';
-		var_dump ($this, round(memory_get_usage() / 1024 / 1024, 2).'MB');
+		var_dump ($this, round(memory_get_usage() / 1024 / 1024, 4).'MB');
 		exit ();
 
 		$this->load->view ('welcome_message');

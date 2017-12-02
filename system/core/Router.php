@@ -1,4 +1,11 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
+
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
 
 class Router {
   private static $directories;
@@ -30,7 +37,7 @@ class Router {
   private static function parseRoutes () {
     $uri = implode ('/', URI::segments ());
 
-    $method = getServerMethodRequest ();
+    $method = request_is_method ();
     $routes = self::getRoutes ();
 
     if (isset ($routes[$method]))
@@ -96,121 +103,3 @@ class Router {
     return self::$method;
   }
 }
-
-
-
-  // private static function setDefaultController () {
-  //     return;
-  //   // echo '<meta http-equiv="Content-type" content="text/html; charset=utf-8" /><pre>';
-  //   // var_dump (self::getDirectory ());
-  //   // exit ();
-
-  //   // if (empty($this->default_controller))
-  //   // {
-  //     // show_error('您沒有設定預設網頁。');
-  //   // }
-
-  //   // Is the method being specified?
-  //   // if (sscanf($this->default_controller, '%[^/]/%s', $class, $method) !== 2)
-  //   // {
-  //   //   $method = 'index';
-  //   // }
-
-  //   // if ( ! file_exists(APPPATH.'controllers/'.self::$directories.ucfirst($class).'.php'))
-  //   // {
-  //   //   // This will trigger 404 later
-  //   // }
-
-  //   $this->set_class($class);
-  //   $this->set_method($method);
-
-  //   // Assign routed segments, index starting from 1
-  //   $this->uri->rsegments = array(
-  //     1 => $class,
-  //     2 => $method
-  //   );
-
-  //   log_message('debug', 'No URI present. Default controller set.');
-  // }
-
-
-
-
-
-
-
-
-
-  // private static function setRouting () {
-
-  //   // if (file_exists(APPPATH.'config/routes.php'))
-  //   // {
-  //   //   include(APPPATH.'config/routes.php');
-  //   // }
-
-  //   // if (file_exists(APPPATH.'config/'.ENVIRONMENT.'/routes.php'))
-  //   // {
-  //   //   include(APPPATH.'config/'.ENVIRONMENT.'/routes.php');
-  //   // }
-
-  //   // // Validate & get reserved routes
-  //   // if (isset($route) && is_array($route))
-  //   // {
-  //   //   isset($route['default_controller']) && $this->default_controller = $route['default_controller'];
-  //   //   isset($route['translate_uri_dashes']) && $this->translate_uri_dashes = $route['translate_uri_dashes'];
-  //   //   unset($route['default_controller'], $route['translate_uri_dashes']);
-  //   //   $this->routes = $route;
-  //   // }
-
-  //   // Are query strings enabled in the config file? Normally CI doesn't utilize query strings
-  //   // since URI segments are more search-engine friendly, but they can optionally be used.
-  //   // If this feature is enabled, we will gather the directory/class/method a little differently
-
-  //   // if (!isCli () && Config::get ('general', 'enable_query_strings') === true) {
-  //   //   // If the directory is set at this time, it means an override exists, so skip the checks
-  //   //   if ( ! isset(self::$directories))
-  //   //   {
-  //   //     $_d = Config::get ('general', 'directory_trigger');
-  //   //     $_d = isset($_GET[$_d]) ? trim($_GET[$_d], " \t\n\r\0\x0B/") : '';
-
-  //   //     if ($_d !== '')
-  //   //     {
-  //   //       $this->uri->filter_uri($_d);
-  //   //       $this->setDirectories($_d);
-  //   //     }
-  //   //   }
-
-  //   //   $_c = trim(Config::get ('general', 'controller_trigger'));
-  //   //   if ( ! empty($_GET[$_c]))
-  //   //   {
-  //   //     $this->uri->filter_uri($_GET[$_c]);
-  //   //     $this->set_class($_GET[$_c]);
-
-  //   //     $_f = trim(Config::get ('general', 'function_trigger'));
-  //   //     if ( ! empty($_GET[$_f]))
-  //   //     {
-  //   //       $this->uri->filter_uri($_GET[$_f]);
-  //   //       $this->set_method($_GET[$_f]);
-  //   //     }
-
-  //   //     $this->uri->rsegments = array(
-  //   //       1 => $this->class,
-  //   //       2 => $this->method
-  //   //     );
-  //   //   }
-  //   //   else
-  //   //   {
-  //   //     $this->_set_default_controller();
-  //   //   }
-
-  //   //   // Routing rules don't apply to query strings and we don't need to detect
-  //   //   // directories, so we're done here
-  //   //   return;
-  //   // }
-
-  //   // Is there anything to parse?
-
-  //   // if (URI::uriString () !== '')
-  //   // else
-  //     // self::setDefaultController ();
-  // }

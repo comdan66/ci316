@@ -1,95 +1,17 @@
-<?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
 
-/**
- * CodeIgniter Encryption Class
- *
- * Provides two-way keyed encoding using Mcrypt
- *
- * @package		CodeIgniter
- * @subpackage	Libraries
- * @category	Libraries
- * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/libraries/encryption.html
- */
 class CI_Encrypt {
 
-	/**
-	 * Reference to the user's encryption key
-	 *
-	 * @var string
-	 */
 	public $encryption_key		= '';
 
-	/**
-	 * Type of hash operation
-	 *
-	 * @var string
-	 */
 	protected $_hash_type		= 'sha1';
 
-	/**
-	 * Flag for the existence of mcrypt
-	 *
-	 * @var bool
-	 */
 	protected $_mcrypt_exists	= FALSE;
 
-	/**
-	 * Current cipher to be used with mcrypt
-	 *
-	 * @var string
-	 */
 	protected $_mcrypt_cipher;
 
-	/**
-	 * Method for encrypting/decrypting data
-	 *
-	 * @var int
-	 */
 	protected $_mcrypt_mode;
 
-	/**
-	 * Initialize Encryption class
-	 *
-	 * @return	void
-	 */
 	public function __construct()
 	{
 		if (($this->_mcrypt_exists = function_exists('mcrypt_encrypt')) === FALSE)
@@ -100,17 +22,6 @@ class CI_Encrypt {
 		log_message('info', 'Encrypt Class Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch the encryption key
-	 *
-	 * Returns it as MD5 in order to have an exact-length 128 bit key.
-	 * Mcrypt is sensitive to keys that are not the correct length
-	 *
-	 * @param	string
-	 * @return	string
-	 */
 	public function get_key($key = '')
 	{
 		if ($key === '')
@@ -131,53 +42,17 @@ class CI_Encrypt {
 		return md5($key);
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set the encryption key
-	 *
-	 * @param	string
-	 * @return	CI_Encrypt
-	 */
 	public function set_key($key = '')
 	{
 		$this->encryption_key = $key;
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Encode
-	 *
-	 * Encodes the message string using bitwise XOR encoding.
-	 * The key is combined with a random hash, and then it
-	 * too gets converted using XOR. The whole thing is then run
-	 * through mcrypt using the randomized key. The end result
-	 * is a double-encrypted message string that is randomized
-	 * with each call to this function, even if the supplied
-	 * message and key are the same.
-	 *
-	 * @param	string	the string to encode
-	 * @param	string	the key
-	 * @return	string
-	 */
 	public function encode($string, $key = '')
 	{
 		return base64_encode($this->mcrypt_encode($string, $this->get_key($key)));
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Decode
-	 *
-	 * Reverses the above process
-	 *
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
 	public function decode($string, $key = '')
 	{
 		if (preg_match('/[^a-zA-Z0-9\/\+=]/', $string) OR base64_encode(base64_decode($string)) !== $string)
@@ -188,23 +63,6 @@ class CI_Encrypt {
 		return $this->mcrypt_decode(base64_decode($string), $this->get_key($key));
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Encode from Legacy
-	 *
-	 * Takes an encoded string from the original Encryption class algorithms and
-	 * returns a newly encoded string using the improved method added in 2.0.0
-	 * This allows for backwards compatibility and a method to transition to the
-	 * new encryption algorithms.
-	 *
-	 * For more details, see https://codeigniter.com/user_guide/installation/upgrade_200.html#encryption
-	 *
-	 * @param	string
-	 * @param	int		(mcrypt mode constant)
-	 * @param	string
-	 * @return	string
-	 */
 	public function encode_from_legacy($string, $legacy_mode = MCRYPT_MODE_ECB, $key = '')
 	{
 		if (preg_match('/[^a-zA-Z0-9\/\+=]/', $string))
@@ -235,18 +93,6 @@ class CI_Encrypt {
 		return base64_encode($this->mcrypt_encode($dec, $key));
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * XOR Decode
-	 *
-	 * Takes an encoded string and key as input and generates the
-	 * plain-text original message
-	 *
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
 	protected function _xor_decode($string, $key)
 	{
 		$string = $this->_xor_merge($string, $key);
@@ -260,17 +106,6 @@ class CI_Encrypt {
 		return $dec;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * XOR key + string Combiner
-	 *
-	 * Takes a string and key as input and computes the difference using XOR
-	 *
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
 	protected function _xor_merge($string, $key)
 	{
 		$hash = $this->hash($key);
@@ -284,15 +119,6 @@ class CI_Encrypt {
 		return $str;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Encrypt using Mcrypt
-	 *
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
 	public function mcrypt_encode($data, $key)
 	{
 		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
@@ -300,15 +126,6 @@ class CI_Encrypt {
 		return $this->_add_cipher_noise($init_vect.mcrypt_encrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), $key);
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Decrypt using Mcrypt
-	 *
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
 	public function mcrypt_decode($data, $key)
 	{
 		$data = $this->_remove_cipher_noise($data, $key);
@@ -325,17 +142,6 @@ class CI_Encrypt {
 		return rtrim(mcrypt_decrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), "\0");
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Adds permuted noise to the IV + encrypted data to protect
-	 * against Man-in-the-middle attacks on CBC mode ciphers
-	 * http://www.ciphersbyritter.com/GLOSSARY.HTM#IV
-	 *
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
 	protected function _add_cipher_noise($data, $key)
 	{
 		$key = $this->hash($key);
@@ -354,18 +160,6 @@ class CI_Encrypt {
 		return $str;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Removes permuted noise from the IV + encrypted data, reversing
-	 * _add_cipher_noise()
-	 *
-	 * Function description
-	 *
-	 * @param	string	$data
-	 * @param	string	$key
-	 * @return	string
-	 */
 	protected function _remove_cipher_noise($data, $key)
 	{
 		$key = $this->hash($key);
@@ -391,41 +185,18 @@ class CI_Encrypt {
 		return $str;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set the Mcrypt Cipher
-	 *
-	 * @param	int
-	 * @return	CI_Encrypt
-	 */
 	public function set_cipher($cipher)
 	{
 		$this->_mcrypt_cipher = $cipher;
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set the Mcrypt Mode
-	 *
-	 * @param	int
-	 * @return	CI_Encrypt
-	 */
 	public function set_mode($mode)
 	{
 		$this->_mcrypt_mode = $mode;
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Get Mcrypt cipher Value
-	 *
-	 * @return	int
-	 */
 	protected function _get_cipher()
 	{
 		if ($this->_mcrypt_cipher === NULL)
@@ -436,13 +207,6 @@ class CI_Encrypt {
 		return $this->_mcrypt_cipher;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Get Mcrypt Mode Value
-	 *
-	 * @return	int
-	 */
 	protected function _get_mode()
 	{
 		if ($this->_mcrypt_mode === NULL)
@@ -453,40 +217,16 @@ class CI_Encrypt {
 		return $this->_mcrypt_mode;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set the Hash type
-	 *
-	 * @param	string
-	 * @return	void
-	 */
 	public function set_hash($type = 'sha1')
 	{
 		$this->_hash_type = in_array($type, hash_algos()) ? $type : 'sha1';
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Hash encode a string
-	 *
-	 * @param	string
-	 * @return	string
-	 */
 	public function hash($str)
 	{
 		return hash($this->_hash_type, $str);
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Byte-safe strlen()
-	 *
-	 * @param	string	$str
-	 * @return	int
-	 */
 	protected static function strlen($str)
 	{
 		return defined('MB_OVERLOAD_STRING')
@@ -494,16 +234,6 @@ class CI_Encrypt {
 			: strlen($str);
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Byte-safe substr()
-	 *
-	 * @param	string	$str
-	 * @param	int	$start
-	 * @param	int	$length
-	 * @return	string
-	 */
 	protected static function substr($str, $start, $length = NULL)
 	{
 		if (defined('MB_OVERLOAD_STRING'))

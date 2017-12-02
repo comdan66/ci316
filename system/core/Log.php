@@ -1,13 +1,21 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
+
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
 
 class Log {
   private static $funcOverload;
   
   public static function init () {
-    isset (self::$funcOverload) || self::$funcOverload = (extension_loaded ('mbstring') && ini_get ('mbstring.func_overload'));
+    self::$funcOverload = extension_loaded ('mbstring') && ini_get ('mbstring.func_overload');
   }
+
   public static function isReallyWritable ($file) {
-    if (DIRECTORY_SEPARATOR === '/' && (isPHP ('5.4') || !ini_get ('safe_mode')))
+    if (DIRECTORY_SEPARATOR === '/' && (is_php ('5.4') || !ini_get ('safe_mode')))
       return is_writable ($file);
 
     if (is_dir ($file)) {
@@ -63,7 +71,7 @@ class Log {
 
   private static function substr ($str, $start, $length = NULL) {
     if (self::$funcOverload) {
-      isset($length) || $length = ($start >= 0 ? self::strlen ($str) - $start : -$start);
+      isset ($length) || $length = ($start >= 0 ? self::strlen ($str) - $start : -$start);
       return mb_substr ($str, $start, $length, '8bit');
     }
 

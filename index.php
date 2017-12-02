@@ -24,15 +24,15 @@ switch (ENVIRONMENT) {
 }
 
 $system_path = 'system';
-
 $application_folder = 'application';
-
 $view_folder = '';
 
 if (defined ('STDIN')) chdir (dirname (__FILE__));
 
 if (!is_dir ($system_path = ($_temp = realpath ($system_path)) !== false ? $_temp . DIRECTORY_SEPARATOR : (strtr (rtrim ($system_path, '/\\'), '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR))) {
-	header ('HTTP/1.1 503 Service Unavailable.', true, 503); echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: ' . pathinfo (__FILE__, PATHINFO_BASENAME); exit (3);
+	header ('HTTP/1.1 503 Service Unavailable.', true, 503);
+	echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: ' . pathinfo (__FILE__, PATHINFO_BASENAME);
+	exit (3);
 }
 
 define('SELF', pathinfo (__FILE__, PATHINFO_BASENAME));
@@ -41,13 +41,17 @@ define('FCPATH', dirname (__FILE__) . DIRECTORY_SEPARATOR);
 define('SYSDIR', basename (BASEPATH));
 
 if (null === ($application_folder = is_dir ($application_folder) ? ($_temp = realpath ($application_folder)) !== false ? $_temp : strtr (rtrim ($application_folder, '/\\'), '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR) : (is_dir(BASEPATH.$application_folder.DIRECTORY_SEPARATOR) ? BASEPATH . strtr (trim ($application_folder, '/\\'), '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR) : null))) {
-	header ('HTTP/1.1 503 Service Unavailable.', true, 503); echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF; exit (3);
+	header ('HTTP/1.1 503 Service Unavailable.', true, 503);
+	echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF;
+	exit (3);
 }
 
 define ('APPPATH', $application_folder . DIRECTORY_SEPARATOR);
 
 if (null === ($view_folder = !isset ($view_folder[0]) && is_dir (APPPATH . 'views' . DIRECTORY_SEPARATOR) ? APPPATH . 'views' : (is_dir ($view_folder) ? (($_temp = realpath($view_folder)) !== false) ? $_temp : strtr (rtrim ($view_folder, '/\\'), '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR) : (is_dir (APPPATH . $view_folder . DIRECTORY_SEPARATOR) ? APPPATH . strtr (trim ($view_folder, '/\\'), '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR) : null)))) {
-	header ('HTTP/1.1 503 Service Unavailable.', true, 503); echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF; exit (3);
+	header ('HTTP/1.1 503 Service Unavailable.', true, 503);
+	echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
+	exit (3);
 }
 
 define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);

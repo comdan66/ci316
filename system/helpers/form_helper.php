@@ -94,7 +94,7 @@ if ( ! function_exists('form_open'))
 		{
 			foreach ($hidden as $name => $value)
 			{
-				$form .= '<input type="hidden" name="'.$name.'" value="'.htmlEscape($value).'" />'."\n";
+				$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape ($value).'" />'."\n";
 			}
 		}
 
@@ -202,7 +202,7 @@ if ( ! function_exists('form_hidden'))
 
 		if ( ! is_array($value))
 		{
-			$form .= '<input type="hidden" name="'.$name.'" value="'.htmlEscape($value)."\" />\n";
+			$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape ($value)."\" />\n";
 		}
 		else
 		{
@@ -318,7 +318,7 @@ if ( ! function_exists('form_textarea'))
 		}
 
 		return '<textarea '._parse_form_attributes($data, $defaults)._attributes_to_string($extra).'>'
-			.htmlEscape($val)
+			.html_escape ($val)
 			."</textarea>\n";
 	}
 }
@@ -425,7 +425,7 @@ if ( ! function_exists('form_dropdown'))
 				foreach ($val as $optgroup_key => $optgroup_val)
 				{
 					$sel = in_array($optgroup_key, $selected) ? ' selected="selected"' : '';
-					$form .= '<option value="'.htmlEscape($optgroup_key).'"'.$sel.'>'
+					$form .= '<option value="'.html_escape ($optgroup_key).'"'.$sel.'>'
 						.(string) $optgroup_val."</option>\n";
 				}
 
@@ -433,7 +433,7 @@ if ( ! function_exists('form_dropdown'))
 			}
 			else
 			{
-				$form .= '<option value="'.htmlEscape($key).'"'
+				$form .= '<option value="'.html_escape ($key).'"'
 					.(in_array($key, $selected) ? ' selected="selected"' : '').'>'
 					.(string) $val."</option>\n";
 			}
@@ -683,13 +683,13 @@ if ( ! function_exists('form_prep'))
 	 *
 	 * Formats text so that it can be safely placed in a form field in the event it has HTML tags.
 	 *
-	 * @deprecated	3.0.0	An alias for htmlEscape()
+	 * @deprecated	3.0.0	An alias for html_escape ()
 	 * @param	string|string[]	$str		Value to escape
 	 * @return	string|string[]	Escaped values
 	 */
 	function form_prep($str)
 	{
-		return htmlEscape($str, TRUE);
+		return html_escape ($str, TRUE);
 	}
 }
 
@@ -718,7 +718,7 @@ if ( ! function_exists('set_value'))
 			: $CI->input->post($field, FALSE);
 
 		isset($value) OR $value = $default;
-		return ($html_escape) ? htmlEscape($value) : $value;
+		return ($html_escape) ? html_escape ($value) : $value;
 	}
 }
 
@@ -962,7 +962,7 @@ if ( ! function_exists('_parse_form_attributes'))
 		{
 			if ($key === 'value')
 			{
-				$val = htmlEscape($val);
+				$val = html_escape ($val);
 			}
 			elseif ($key === 'name' && ! strlen($default['name']))
 			{

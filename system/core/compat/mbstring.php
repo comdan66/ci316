@@ -1,31 +1,40 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
+
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
 
 if (MB_ENABLED === true)
 	return;
 
 if (!function_exists ('mb_strlen')) {
 	function mb_strlen ($str, $encoding = null) {
-		if (ICONV_ENABLED === true)
-			return iconv_strlen ($str, isset ($encoding) ? $encoding : (($t = Config::get ('general', 'charset')) ? $t : 'UTF-8'));
-		return strlen ($str);
+		if (ICONV_ENABLED !== true)
+			return strlen ($str);
+
+		return iconv_strlen ($str, $encoding ? $encoding : Config::get ('general', 'charset'));
 	}
 }
 
 if (!function_exists ('mb_strpos')) {
 	function mb_strpos ($haystack, $needle, $offset = 0, $encoding = null) {
-		if (ICONV_ENABLED === true)
-			return iconv_strpos ($haystack, $needle, $offset, isset ($encoding) ? $encoding : Config::get ('general', 'charset'));
-		return strpos ($haystack, $needle, $offset);
+		if (ICONV_ENABLED !== true)
+			return strpos ($haystack, $needle, $offset);
+	
+		return iconv_strpos ($haystack, $needle, $offset, $encoding ? $encoding : Config::get ('general', 'charset'));
 	}
 }
 
 if (!function_exists ('mb_substr')) {
 	function mb_substr ($str, $start, $length = null, $encoding = null) {
-		if (ICONV_ENABLED === true) {
-			isset ($encoding) || $encoding = (($t = Config::get ('general', 'charset')) ? $t : 'UTF-8');
-			return iconv_substr ($str, $start, isset($length) ? $length : iconv_strlen($str, $encoding), $encoding);
-		}
-
-		return isset ($length) ? substr ($str, $start, $length) : substr ($str, $start);
+		if (ICONV_ENABLED !== true)
+			return isset ($length) ? substr ($str, $start, $length) : substr ($str, $start);
+			
+		$encoding || $encoding = Config::get ('general', 'charset');
+		$length || $length = iconv_strlen ($str, $encoding);
+		return iconv_substr ($str, $start, $length, $encoding);
 	}
 }

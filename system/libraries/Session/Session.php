@@ -70,7 +70,7 @@ class CI_Session {
 	public function __construct(array $params = array())
 	{
 		// No sessions under CLI
-		if (is_cli())
+		if (request_is_cli ())
 		{
 			log_message('debug', 'Session: Initialization under CLI aborted.');
 			return;

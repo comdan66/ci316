@@ -1,162 +1,38 @@
-<?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
 
-/**
- * CodeIgniter URL Helpers
- *
- * @package		CodeIgniter
- * @subpackage	Helpers
- * @category	Helpers
- * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/helpers/url_helper.html
- */
-
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('site_url'))
-{
-	/**
-	 * Site URL
-	 *
-	 * Create a local URL based on your basepath. Segments can be passed via the
-	 * first parameter either as a string or an array.
-	 *
-	 * @param	string	$uri
-	 * @param	string	$protocol
-	 * @return	string
-	 */
-	function site_url($uri = '', $protocol = NULL)
-	{
+if (!function_exists ('site_url')) {
+	function site_url ($uri = '', $protocol = null) {
 		return get_instance()->config->site_url($uri, $protocol);
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('base_url'))
-{
-	/**
-	 * Base URL
-	 *
-	 * Create a local URL based on your basepath.
-	 * Segments can be passed in as a string or an array, same as site_url
-	 * or a URL to a file can be passed in, e.g. to an image file.
-	 *
-	 * @param	string	$uri
-	 * @param	string	$protocol
-	 * @return	string
-	 */
-	function base_url($uri = '', $protocol = NULL)
-	{
+if (!function_exists ('base_url')) {
+	function base_url ($uri = '', $protocol = null) {
 		return get_instance()->config->base_url($uri, $protocol);
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('current_url'))
-{
-	/**
-	 * Current URL
-	 *
-	 * Returns the full URL (including segments) of the page where this
-	 * function is placed
-	 *
-	 * @return	string
-	 */
-	function current_url()
-	{
+if (!function_exists ('current_url')) {
+	function current_url () {
 		$CI =& get_instance();
 		return $CI->config->site_url($CI->uri->uri_string());
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('uri_string'))
-{
-	/**
-	 * URL String
-	 *
-	 * Returns the URI segments.
-	 *
-	 * @return	string
-	 */
-	function uri_string()
-	{
+if (!function_exists ('uri_string')) {
+	function uri_string () {
 		return get_instance()->uri->uri_string();
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('index_page'))
-{
-	/**
-	 * Index page
-	 *
-	 * Returns the "index_page" from your config file
-	 *
-	 * @return	string
-	 */
-	function index_page()
-	{
+if (!function_exists ('index_page')) {
+	function index_page () {
 		return Config::get ('general', 'index_page');
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('anchor'))
-{
-	/**
-	 * Anchor Link
-	 *
-	 * Creates an anchor based on the local URL.
-	 *
-	 * @param	string	the URL
-	 * @param	string	the link title
-	 * @param	mixed	any attributes
-	 * @return	string
-	 */
-	function anchor($uri = '', $title = '', $attributes = '')
-	{
+if (!function_exists ('anchor')) {
+	function anchor ($uri = '', $title = '', $attributes = '') {
 		$title = (string) $title;
 
 		$site_url = is_array($uri)
@@ -170,30 +46,15 @@ if ( ! function_exists('anchor'))
 
 		if ($attributes !== '')
 		{
-			$attributes = stringifyAttributes($attributes);
+			$attributes = stringify_attributes ($attributes);
 		}
 
 		return '<a href="'.$site_url.'"'.$attributes.'>'.$title.'</a>';
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('anchor_popup'))
-{
-	/**
-	 * Anchor Link - Pop-up version
-	 *
-	 * Creates an anchor based on the local URL. The link
-	 * opens a new window based on the attributes specified.
-	 *
-	 * @param	string	the URL
-	 * @param	string	the link title
-	 * @param	mixed	any attributes
-	 * @return	string
-	 */
-	function anchor_popup($uri = '', $title = '', $attributes = FALSE)
-	{
+if (!function_exists ('anchor_popup')) {
+	function anchor_popup ($uri = '', $title = '', $attributes = FALSE) {
 		$title = (string) $title;
 		$site_url = preg_match('#^(\w+:)?//#i', $uri) ? $uri : site_url($uri);
 
@@ -230,28 +91,16 @@ if ( ! function_exists('anchor_popup'))
 			unset($attributes[$key]);
 		}
 
-		$attributes = stringifyAttributes($attributes);
+		$attributes = stringify_attributes ($attributes);
 
 		return '<a href="'.$site_url
-			.'" onclick="window.open(\''.$site_url."', '".$window_name."', '".stringifyAttributes($atts, TRUE)."'); return false;\""
+			.'" onclick="window.open(\''.$site_url."', '".$window_name."', '".stringify_attributes ($atts, TRUE)."'); return false;\""
 			.$attributes.'>'.$title.'</a>';
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('mailto'))
-{
-	/**
-	 * Mailto Link
-	 *
-	 * @param	string	the email address
-	 * @param	string	the link title
-	 * @param	mixed	any attributes
-	 * @return	string
-	 */
-	function mailto($email, $title = '', $attributes = '')
-	{
+if (!function_exists ('mailto')) {
+	function mailto ($email, $title = '', $attributes = '') {
 		$title = (string) $title;
 
 		if ($title === '')
@@ -259,26 +108,12 @@ if ( ! function_exists('mailto'))
 			$title = $email;
 		}
 
-		return '<a href="mailto:'.$email.'"'.stringifyAttributes($attributes).'>'.$title.'</a>';
+		return '<a href="mailto:'.$email.'"'.stringify_attributes ($attributes).'>'.$title.'</a>';
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('safe_mailto'))
-{
-	/**
-	 * Encoded Mailto Link
-	 *
-	 * Create a spam-protected mailto link written in Javascript
-	 *
-	 * @param	string	the email address
-	 * @param	string	the link title
-	 * @param	mixed	any attributes
-	 * @return	string
-	 */
-	function safe_mailto($email, $title = '', $attributes = '')
-	{
+if (!function_exists ('safe_mailto')) {
+	function safe_mailto ($email, $title = '', $attributes = '') {
 		$title = (string) $title;
 
 		if ($title === '')
@@ -373,25 +208,8 @@ if ( ! function_exists('safe_mailto'))
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('auto_link'))
-{
-	/**
-	 * Auto-linker
-	 *
-	 * Automatically links URL and Email addresses.
-	 * Note: There's a bit of extra code here to deal with
-	 * URLs or emails that end in a period. We'll strip these
-	 * off and add them after the link.
-	 *
-	 * @param	string	the string
-	 * @param	string	the type: email, url, or both
-	 * @param	bool	whether to create pop-up links
-	 * @return	string
-	 */
-	function auto_link($str, $type = 'both', $popup = FALSE)
-	{
+if (!function_exists ('auto_link')) {
+	function auto_link ($str, $type = 'both', $popup = FALSE) {
 		// Find and replace any URLs.
 		if ($type !== 'email' && preg_match_all('#(\w*://|www\.)[^\s()<>;]+\w#i', $str, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER))
 		{
@@ -429,20 +247,8 @@ if ( ! function_exists('auto_link'))
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('prep_url'))
-{
-	/**
-	 * Prep URL
-	 *
-	 * Simply adds the http:// part if no scheme is included
-	 *
-	 * @param	string	the URL
-	 * @return	string
-	 */
-	function prep_url($str = '')
-	{
+if (!function_exists ('prep_url')) {
+	function prep_url ($str = '') {
 		if ($str === 'http://' OR $str === '')
 		{
 			return '';
@@ -459,26 +265,8 @@ if ( ! function_exists('prep_url'))
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('url_title'))
-{
-	/**
-	 * Create URL Title
-	 *
-	 * Takes a "title" string as input and creates a
-	 * human-friendly URL string with a "separator" string
-	 * as the word separator.
-	 *
-	 * @todo	Remove old 'dash' and 'underscore' usage in 3.1+.
-	 * @param	string	$str		Input string
-	 * @param	string	$separator	Word separator
-	 *			(usually '-' or '_')
-	 * @param	bool	$lowercase	Whether to transform the output string to lowercase
-	 * @return	string
-	 */
-	function url_title($str, $separator = '-', $lowercase = FALSE)
-	{
+if (!function_exists ('url_title')) {
+	function url_title ($str, $separator = '-', $lowercase = FALSE) {
 		if ($separator === 'dash')
 		{
 			$separator = '-';
@@ -512,25 +300,8 @@ if ( ! function_exists('url_title'))
 	}
 }
 
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('redirect'))
-{
-	/**
-	 * Header Redirect
-	 *
-	 * Header redirect in two flavors
-	 * For very fine grained control over headers, you could use the Output
-	 * Library's set_header() function.
-	 *
-	 * @param	string	$uri	URL
-	 * @param	string	$method	Redirect method
-	 *			'auto', 'location' or 'refresh'
-	 * @param	int	$code	HTTP Response status code
-	 * @return	void
-	 */
-	function redirect($uri = '', $method = 'auto', $code = NULL)
-	{
+if (!function_exists ('redirect')) {
+	function redirect ($uri = '', $method = 'auto', $code = null) {
 		if ( ! preg_match('#^(\w+:)?//#i', $uri))
 		{
 			$uri = site_url($uri);

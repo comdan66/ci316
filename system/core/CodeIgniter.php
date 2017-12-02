@@ -1,46 +1,33 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
+
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
 
 const CI_VERSION = '3.1.6';
 
-function _r ($class, $path = null, $init = true) {
-	if (!file_exists ($path = ($path === null ? BASEPATH . 'core' . DIRECTORY_SEPARATOR : $path) . $class . '.php'))
-		exit ('GG');
-
-	require_once ($path);
-
-	if ($init && class_exists ($class) && is_callable (array ($class, 'init')))
-		$class::init ();
-
-	return true;
-}
+include_once BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'Common' . '.php';
 
 _r ('Benchmark');
 _r ('Config');
-_r ('Common');
 _r ('Log');
 _r ('Exceptions');
-
-// 自動載入 Composer
-if ((Config::get ('composer_autoload') === true) && file_exists ($path = FCPATH . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'))
-	require_once ($path);
-
-// 定義 charset
-ini_set ('default_charset', $charset = ($charset = Config::get ('general', 'charset')) === null ? 'UTF-8' : $charset);
-if (extension_loaded ('mbstring')) { define ('MB_ENABLED', true); @ini_set ('mbstring.internal_encoding', $charset); mb_substitute_character ('none'); } else { define ('MB_ENABLED', false); }
-if (extension_loaded ('iconv')) { define ('ICONV_ENABLED', true); @ini_set ('iconv.internal_encoding', $charset); } else { define ('ICONV_ENABLED', false); }
-isPhp ('5.6') && ini_set ('php.internal_encoding', $charset);
-
-// 載入相容性的函式
-array_map (function ($name) { return _r ($name, BASEPATH . 'core' . DIRECTORY_SEPARATOR . 'compat' . DIRECTORY_SEPARATOR); }, array ('mbstring', 'hash', 'password', 'standard'));
-
+_r ('Charset');
 _r ('Utf8');
 _r ('URI');
+
 _r ('Router');
 _r ('Output');
 _r ('Security');
 _r ('Input');
 _r ('Controller');
 _r ('Model', null, false);
+
+// 載入 Composer autoload
+Config::get ('general', 'composer_autoload') && _r ('autoload', FCPATH . 'vendor' . DIRECTORY_SEPARATOR, false);
 
 Benchmark::mark ('loading_time:_base_classes_end');
 

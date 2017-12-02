@@ -583,7 +583,7 @@ if ( ! function_exists('timezone_menu'))
 			$menu .= ' class="'.$class.'"';
 		}
 
-		$menu .= stringifyAttributes($attributes).">\n";
+		$menu .= stringify_attributes ($attributes).">\n";
 
 		foreach (timezones() as $key => $val)
 		{

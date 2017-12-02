@@ -1,6 +1,14 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
 
-if (isPhp('5.5')) return;
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
+
+if (is_php ('5.5'))
+	return;
 
 if (!function_exists ('array_column')) {
 	function array_column (array $array, $column_key, $index_key = null) {
@@ -45,7 +53,8 @@ if (!function_exists ('array_column')) {
 	}
 }
 
-if (isPhp('5.4')) return;
+if (is_php ('5.4'))
+	return;
 
 if (!function_exists ('hex2bin')) {
 	function hex2bin ($data) {

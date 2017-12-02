@@ -18,7 +18,7 @@ class Input {
     self::$inputStream = null;
 
     self::sanitizeGlobals ();
-    if (Config::get ('csrf', 'protection') && !isCli ())
+    if (Config::get ('csrf', 'protection') && !request_is_cli ())
       Security::csrfVerify ();
 
     self::$init = true;
@@ -65,13 +65,13 @@ class Input {
       return $t;
     }
 
-    if (!isPhp ('5.4') && get_magic_quotes_gpc ())
+    if (!is_php ('5.4') && get_magic_quotes_gpc ())
       $str = stripslashes ($str);
 
     if (UTF8_ENABLED === true)
       $str = Utf8::cleanString ($str);
 
-    $str = removeInvisibleCharacters ($str, false);
+    $str = remove_invisible_characters ($str, false);
 
     return preg_replace ('/(?:\r\n|[\r\n])/', PHP_EOL, $str);
   }

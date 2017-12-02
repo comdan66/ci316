@@ -1,4 +1,11 @@
-<?php defined ('BASEPATH') OR exit ('No direct script access allowed');
+<?php defined ('BASEPATH') || exit ('此檔案不允許讀取。');
+
+/**
+ * @author      OA Wu <comdan66@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2017, OACI
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://www.ioa.tw/
+ */
 
 class Security {
   private static $expire;
@@ -21,14 +28,13 @@ class Security {
     self::$cookieName = 'ci_csrf_token';
 
     if (Config::get ('csrf', 'protection')) {
-      self::$expire = ($t = Config::get ('csrf', 'expire')) ? $t : self::$expire;
-      self::$tokenName = ($t = Config::get ('csrf', 'token_name')) ? $t : self::$tokenName;
-      self::$cookieName = (($p = Config::get ('cookie', 'prefix')) ? $p : '') . (($t = Config::get ('csrf', 'cookie_name')) ? $t : self::$cookieName);
-
+      self::$expire = Config::get ('csrf', 'expire');
+      self::$tokenName = Config::get ('csrf', 'token_name');
+      self::$cookieName = Config::get ('cookie', 'prefix') . Config::get ('csrf', 'cookie_name');
       self::csrfSetHash ();
     }
 
-    self::$charset = strtoupper (($t = Config::get ('general', 'charset')) ? $t : 'UTF-8');
+    self::$charset = strtoupper (Config::get ('general', 'charset'));
   }  
 
 
@@ -59,7 +65,7 @@ class Security {
       return $output;
 
     if (is_readable ('/dev/urandom') && ($fp = fopen('/dev/urandom', 'rb')) !== false) {
-      isPhp ('5.4') && stream_set_chunk_size ($fp, $length);
+      is_php ('5.4') && stream_set_chunk_size ($fp, $length);
       $output = fread ($fp, $length);
       fclose ($fp);
       
@@ -100,7 +106,7 @@ class Security {
   }
 
   public static function csrfSetCookie () {
-    if (($secure_cookie = (bool) Config::get ('cookie', 'secure')) && !selfIsHttps ())
+    if (($secure_cookie = (bool) Config::get ('cookie', 'secure')) && !request_is_https ())
       return false;
 
     setcookie (self::$cookieName, self::$hash, time () + self::$expire, Config::get ('cookie', 'path'), Config::get ('cookie', 'domain'), $secure_cookie, Config::get ('cookie', 'httponly'));
@@ -130,7 +136,7 @@ class Security {
     if (strpos ($str, '&') === false) return $str;
 
     $charset = !isset ($charset) ? self::$charset : $charset;
-    $flag = isPhp ('5.4') ? ENT_COMPAT | ENT_HTML5 : ENT_COMPAT;
+    $flag = is_php ('5.4') ? ENT_COMPAT | ENT_HTML5 : ENT_COMPAT;
 
     if (!isset (self::$entities)) {
       self::$entities = array_map ('strtolower', get_html_translation_table (HTML_ENTITIES, $flag, $charset));
@@ -243,7 +249,7 @@ class Security {
       return $str;
     }
 
-    $str = removeInvisibleCharacters ($str);
+    $str = remove_invisible_characters ($str);
 
     if (stripos ($str, '%') !== false) {
       do {
@@ -257,7 +263,7 @@ class Security {
     $str = preg_replace_callback ("/[^a-z0-9>]+[a-z0-9]+=([\'\"]).*?\\1/si", array ('Security', 'convertAttribute'), $str);
     $str = preg_replace_callback ('/<\w+.*/si', array ('Security', 'decodeEntity'), $str);
 
-    $str = removeInvisibleCharacters($str);
+    $str = remove_invisible_characters($str);
 
     $str = str_replace ("\t", ' ', $str);
 
@@ -309,7 +315,7 @@ class Security {
     if (!$relative_path)
       array_push ($bad, './', '/');
 
-    $str = removeInvisibleCharacters ($str, false);
+    $str = remove_invisible_characters ($str, false);
 
     do {
       $old = $str;
